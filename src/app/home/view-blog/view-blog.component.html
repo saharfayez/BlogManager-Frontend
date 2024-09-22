@@ -1,0 +1,21 @@
+<app-header/>
+<div class="blog-details">
+    <mat-card class="blog-card">
+      <mat-card-header>
+        <mat-card-title>Title : {{ blogTitle }}</mat-card-title>
+      
+      </mat-card-header>
+      <mat-card-content>
+        <p>Content : {{ blogContent }}</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card-actions>
+      <button mat-raised-button class="back-button" (click)="redirectToHome()" color="primary">
+      
+        Back
+      </button>
+    </mat-card-actions>
+   
+    
+  </div>
+  
