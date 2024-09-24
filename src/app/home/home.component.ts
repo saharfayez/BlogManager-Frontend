@@ -40,14 +40,15 @@ export class HomeComponent implements OnInit{
 
   ngOnInit() {
     this.updateLoginState();
+
     this.blogService.getAllPosts().subscribe(res => {
       this.posts = res;
-    console.log(this.posts[0].userName);
+     console.log(this.posts);
       
     });
     
-    
   }
+  
 
   updateLoginState() {
     this.isLoggedIn = this.authService.isLogged();
@@ -60,10 +61,6 @@ export class HomeComponent implements OnInit{
     return this.isLoggedIn && userName === this.currentUser;
   }
 
-  redirectToLogin() {
-    console.log('Navigating to login page'); // Debug line
-    this.router.navigate(['/login']);
-  }
 
   redirectToAddPost() {
     console.log('Navigating to Add Blog page'); // Debug line
@@ -83,20 +80,40 @@ export class HomeComponent implements OnInit{
   }
 
   editPost(postId: number): void {
-    this.router.navigate(['/edit-blog', postId]); // Navigate to the 'Edit Blog' component with post ID
+    this.router.navigate(['/edit-blog', postId]); 
   }
 
-  async deletePost(postId: number) {
-    const post = await this.blogService.getPostById(postId); // Await the post retrieval
-    if (post && this.authService.isLogged() === post.author) {
-      await this.blogService.deletePost(postId, post.author); // Await the deletion
-      this.posts = this.posts// Refresh post list
-    }
-    this.router.navigate(['/']);
+  deletePost(postId: number) {
+   
+    this.blogService.getPostByIdFromDatabase(postId).subscribe({
+      
+      next: (post) => {  
+
+        if (post && this.authService.getUser() === post.userName) {
+          
+          this.blogService.deletePostFromDatabase(postId).subscribe({
+            next: () => {
+              this.posts = this.posts.filter((p) => p.id !== postId);
+              alert('Post deleted successfully');
+              this.router.navigate(['/home']);
+            },
+            error: (err) => {
+              console.error('Error deleting post:', err);
+              alert('Failed to delete the post. Please try again.');
+            }
+          });
+        } else {
+          alert('You are not authorized to delete this post.');
+        }
+      },
+      error: (err) => {
+        console.error('Error retrieving post:', err);
+        alert('Post not found. Please try again.');
+      }
+    });
   }
 
   viewBlogDetails(postId :number){
-    console.log("jj");
     
     this.router.navigate(['/view-blog' , postId]);
     

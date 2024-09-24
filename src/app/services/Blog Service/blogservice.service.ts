@@ -16,32 +16,31 @@ export class BlogService {
 
   // Add Post to Database
   addPost(post: Post){
+    
     return this.httpClient.post(`${this.url}/posts`, post);
   }
 
   getAllPosts(): Observable<any> {
+
     return this.httpClient.get(`${this.url}/posts`);
   }
 
+  getPostByIdFromDatabase(id: number): Observable<any> {
+
+    return this.httpClient.get(`${this.url}/posts/${id}`);
+  }
+
+ updatePostFromDatabase(post:Post): Observable<any>   {
+  return this.httpClient.put(`${this.url}/posts/${post.id}` , post)
+  
+} 
+
+ deletePostFromDatabase(id:number) : Observable<any> {
+
+    return this.httpClient.delete(`${this.url}/posts/${id}`);
+
+}
  
-  // Retrieve a single post by ID
-  async getPostById(id: number): Promise<any> {
-    return await this.indexedDBService.getPostById(id);
-  }
-
-  // Update an existing post
-  async updatePost(
-    id: number,
-    title: string,
-    content: string
-  ): Promise<boolean> {
-    const post = await this.indexedDBService.getPostById(id);
-
-    await this.indexedDBService.updatePost({ id, title, content });
-    return true;
-  }
-
-  // Delete a post
   async deletePost(id: number, author: string): Promise<boolean> {
     const post = await this.indexedDBService.getPostById(id);
     if (post && post.author === author) {

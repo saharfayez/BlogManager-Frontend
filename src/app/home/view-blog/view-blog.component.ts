@@ -16,19 +16,26 @@ export class ViewBlogComponent {
   blogId!:number;
   blogTitle!:string;
   blogContent!:string;
-
-
+ 
   ngOnInit(): void {
     this.blogId = +this.route.snapshot.paramMap.get('id')!;
   
-    this.blogService.getPostById(this.blogId).then(blog=>{
+    this.blogService.getPostByIdFromDatabase(this.blogId).subscribe({
 
-    this.blogTitle=blog.title;
-    this.blogContent=blog.content;
-  })
+
+      next: (post) => {
+       this.blogTitle = post.title;
+       this.blogContent = post.content;
+      },
+      error: (err) => {
+        console.error('Error updating post:', err);
+        alert('Failed to update the post. Please try again.');
+      }
+    });
+      
   }
 
   redirectToHome(){
-    this.router.navigate(['/']);
+    this.router.navigate(['/home']);
   }
 }

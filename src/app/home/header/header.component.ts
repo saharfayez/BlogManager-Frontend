@@ -58,7 +58,7 @@ export class HeaderComponent {
 
   checkUrl(){
     const currentUrl = this.router.url;
-    this.isAuthPage = currentUrl === '/auth/login';
+    this.isAuthPage = currentUrl === '/login';
     console.log(this.isAuthPage);
     
   }
@@ -67,7 +67,7 @@ export class HeaderComponent {
 
   redirectToLogin() {
     console.log('Navigating to login page'); // Debug line
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/login']);
   }
 
 
@@ -95,6 +95,6 @@ export class HeaderComponent {
   logout() {
     this.authService.logout();
     this.updateLoginState();
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/login']);
   }
 }

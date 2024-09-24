@@ -56,12 +56,19 @@ export class AddBlogComponent {
         title,
         content
       };
-      this.blogService.addPost(post).subscribe();
-
-      this.redirectToHomePage();
+      this.blogService.addPost(post).subscribe({
+        next: () => {
+          alert('Post added successfully');
+          this.redirectToHomePage();
+        },
+        error: (err) => {
+          console.error('Error adding post', err);
+          alert('Failed to add post. Please try again.');
+        }
+      });
     }
   }
   redirectToHomePage() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/home']);
   }
 }

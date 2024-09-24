@@ -65,7 +65,7 @@ export class SignupComponent {
 
   redirectToLogin(){
 
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/login']);
       
   }
 

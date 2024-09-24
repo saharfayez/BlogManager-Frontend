@@ -8,22 +8,27 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { HeaderComponent } from "../header/header.component";
 import { BlogModelComponent } from "../../shared/blog-model/blog-model.component";
+import { Post } from '../../model/post.model';
+
 @Component({
   selector: 'app-edit-blog',
   standalone: true,
-  imports: [ReactiveFormsModule,
+  imports: [
     ReactiveFormsModule,
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    MatCardModule, HeaderComponent, BlogModelComponent],
+    MatCardModule,
+    HeaderComponent,
+    BlogModelComponent
+  ],
   templateUrl: './edit-blog.component.html',
   styleUrls: ['./edit-blog.component.css']
 })
 export class EditBlogComponent implements OnInit {
   blogForm: FormGroup;
   blogId!: number;
-  author!: string;
+  post!: Post;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,44 +36,65 @@ export class EditBlogComponent implements OnInit {
     private fb: FormBuilder,
     private blogService: BlogService
   ) {
-    // Initialize the form group
+    
     this.blogForm = this.fb.group({
       title: [''],
       content: ['']
     });
   }
+
   ngOnInit(): void {
+    
     this.blogId = +this.route.snapshot.paramMap.get('id')!;
-  
-    this.blogService.getPostById(this.blogId).then(blog => {
-      if (blog) {
-        this.blogForm.patchValue({
-          title: blog.title,
-          content: blog.content
-        });
-      } else {
-        console.error('Blog post not found');
-        this.router.navigate(['/']);
+
+   
+    this.blogService.getPostByIdFromDatabase(this.blogId).subscribe({
+      next: (post) => {
+        this.post = post;
+        this.populateForm(post);
+      },
+      error: (err) => {
+        console.error('Error fetching post:', err);
+        alert('Failed to load the blog post. Please try again.');
       }
-    }).catch(error => {
-      console.error('Error fetching the blog post', error);
+    });
+
+  }
+
+ 
+  populateForm(post: Post) {
+    this.blogForm.patchValue({
+      title: post.title,
+      content: post.content
     });
   }
-  async onSubmit(): Promise<void> {
-    const { title, content } = this.blogForm.value;
-    
-    // Make sure to pass the author as well
-    const isUpdated = await this.blogService.updatePost(this.blogId, title, content);
-    
-    if (isUpdated) {
-      // Redirect to the home page if the update is successful
-      this.router.navigate(['/']);
-    } else {
-      // Handle update failure
-      alert('Failed to update the blog post. You may not be authorized to edit this post.');
+
+  
+   onSubmit(): void {
+    const {title , content} = this.blogForm.value;
+    if (this.blogForm.valid) {
+      const updatedPost: Post = {
+        id: this.blogId,  
+        title :title,
+        content: content
+      };
+
+      this.blogService.updatePostFromDatabase(updatedPost).subscribe({
+        next: (response) => {
+          console.log('Post updated successfully:', response);
+          alert('Post updated successfully');
+          this.redirectToHomePage();
+        },
+        error: (err) => {
+          console.error('Error updating post:', err);
+          alert('Failed to update the post. Please try again.');
+        }
+      });
     }
   }
-  redirectToHomePage(){
-    this.router.navigate(['/'])
+
+  
+  redirectToHomePage() {
+    this.router.navigate(['/home']);
   }
 }
