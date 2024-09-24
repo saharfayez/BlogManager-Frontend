@@ -1,4 +1,8 @@
-export interface Payload{
+export interface Payload
+{
+
     username:string;
+
     password :string;
+    
 }

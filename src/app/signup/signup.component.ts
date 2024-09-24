@@ -12,8 +12,6 @@ import { Payload } from '../model/payload.model';
 import { AuthService } from '../services/Authentication Service/auth.service';
 
 
-
-
 @Component({
   selector: 'app-signup',
   standalone: true,

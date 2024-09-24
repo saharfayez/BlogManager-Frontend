@@ -3,10 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Payload } from '../../model/payload.model';
 import { map, Observable } from 'rxjs';
 
-
-
- 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -46,15 +42,20 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
+
     localStorage.removeItem(this.USER_KEY);
   }
+
   clear():any{
     localStorage.clear();
   }
 
   saveUser(user:any){
-  localStorage.removeItem(this.USER_KEY);
-  localStorage.setItem(this.USER_KEY , user);
+
+   localStorage.removeItem(this.USER_KEY);
+
+   localStorage.setItem(this.USER_KEY , user);
+
   }
 
   saveToken(token:string){
@@ -76,7 +77,9 @@ export class AuthService {
   getToken():string | null  {
 
     const token = localStorage.getItem(this.TOKEN_KEY);
+
     console.log(token);
+    
     return token;
     
   }

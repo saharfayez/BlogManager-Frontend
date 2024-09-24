@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { IndexedDBService } from '../IndexedDB Service/indexeddb.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Post } from '../../model/post.model';
@@ -8,13 +7,11 @@ import { Post } from '../../model/post.model';
   providedIn: 'root',
 })
 export class BlogService {
+  
   private url = 'http://localhost:8080';
-  constructor(
-    private indexedDBService: IndexedDBService,
-    private httpClient: HttpClient,
-  ) {}
 
-  // Add Post to Database
+  constructor( private httpClient: HttpClient){}
+    
   addPost(post: Post){
     
     return this.httpClient.post(`${this.url}/posts`, post);
@@ -37,16 +34,9 @@ export class BlogService {
 
  deletePostFromDatabase(id:number) : Observable<any> {
 
-    return this.httpClient.delete(`${this.url}/posts/${id}`);
+  return this.httpClient.delete(`${this.url}/posts/${id}`);
 
 }
- 
-  async deletePost(id: number, author: string): Promise<boolean> {
-    const post = await this.indexedDBService.getPostById(id);
-    if (post && post.author === author) {
-      await this.indexedDBService.deletePost(id);
-      return true;
-    }
-    return false;
-  }
-}
+
+
+ }
