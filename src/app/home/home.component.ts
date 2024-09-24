@@ -29,6 +29,8 @@ export class HomeComponent implements OnInit{
   posts: any[] = [];
   isLoggedIn = false;
   currentUser = '';
+ 
+  
 
   constructor(
     private router: Router,
@@ -38,20 +40,24 @@ export class HomeComponent implements OnInit{
 
   ngOnInit() {
     this.updateLoginState();
-    this.blogService.getAllPosts().then(posts => {
-      this.posts = posts;
+    this.blogService.getAllPosts().subscribe(res => {
+      this.posts = res;
+    console.log(this.posts[0].userName);
+      
     });
+    
+    
   }
 
   updateLoginState() {
-    this.isLoggedIn = this.authService.isLoggedIn();
+    this.isLoggedIn = this.authService.isLogged();
     if (this.isLoggedIn) {
-      this.currentUser = this.authService.getCurrentUser()!;
+      this.currentUser = this.authService.getUser()!;
     }
   }
 
-  canEditOrDelete(postAuthor: string): boolean {
-    return this.isLoggedIn && postAuthor === this.currentUser;
+  canEditOrDelete(userName:string): boolean {
+    return this.isLoggedIn && userName === this.currentUser;
   }
 
   redirectToLogin() {
@@ -82,9 +88,9 @@ export class HomeComponent implements OnInit{
 
   async deletePost(postId: number) {
     const post = await this.blogService.getPostById(postId); // Await the post retrieval
-    if (post && this.authService.getCurrentUser() === post.author) {
+    if (post && this.authService.isLogged() === post.author) {
       await this.blogService.deletePost(postId, post.author); // Await the deletion
-      this.posts = await this.blogService.getAllPosts(); // Refresh post list
+      this.posts = this.posts// Refresh post list
     }
     this.router.navigate(['/']);
   }

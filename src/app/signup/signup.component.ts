@@ -12,6 +12,8 @@ import { Payload } from '../model/payload.model';
 import { AuthService } from '../services/Authentication Service/auth.service';
 
 
+
+
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -35,7 +37,7 @@ export class SignupComponent {
   constructor(private authService : AuthService ,private fb: FormBuilder, private router: Router) {
     this.signupForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(4)]]
     });
   }
 
@@ -46,34 +48,25 @@ export class SignupComponent {
       password
     };
 
-    const existingUser = JSON.parse(localStorage.getItem(username) || 'null');
-
-    if (existingUser) {
-      alert('Username is already taken. Please choose another one.');
-      return;
-    }
-
-    // this.authService.signup(payload).subscribe();
-
-
-    
-    // localStorage.setItem(username, JSON.stringify(password));
-
-    // // Log in the user after successful signup
-    // localStorage.setItem('loggedInUser', username);
-
-    // // Redirect to home page
-    // this.router.navigate(['/login']);
     this.authService.signup(payload).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log(response.id);
+        console.log(response.username);
         alert('Signup successful!');
-        this.router.navigate(['/login']);
+        this.redirectToLogin();
       },
       error: (err) => {
         alert('Signup failed. Please try again.');
         console.error(err);
       }
     });
+    
+  }
+
+  redirectToLogin(){
+
+    this.router.navigate(['/auth/login']);
+      
   }
 
 }

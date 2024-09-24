@@ -9,6 +9,7 @@ import {MatSelectModule} from '@angular/material/select';
 import { AuthService } from '../services/Authentication Service/auth.service';
 import { HeaderComponent } from "../home/header/header.component";
 import { FormComponent } from "../shared/form-model/form.component";
+import { Payload } from '../model/payload.model';
 
 @Component({
   selector: 'app-login',
@@ -33,29 +34,38 @@ export class LoginComponent {
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
     });
   }
  
 
   onSubmit() {
-    //need to check if username or password wrong before after we checl that if the user exists or not
-    if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
-      const success = this.authService.login(username, password);
 
-      if (success) {
-        // Navigate to home after successful login
-        this.router.navigate(['/home']);
-      }
-      else if(username!= this.authService.getCurrentUser()){
-      }
+    const { username,password } = this.loginForm.value;
+
+    const payload: Payload = {
+      username,
+      password
+    };
+
+    this.authService.authenticate(payload).subscribe({
       
-      
-      else {
-        alert("You don't have an account.Please Sign up First ");
-        this.router.navigate(['/signup']);
+      next: (response) => {
+
+        console.log(response.token);
+        alert('Login successful!'); 
+        this.redirectToHome();
+      },
+      error: (err) => {
+        
+        alert('Login failed. Please try again.');
+        console.error('Error:', err);  // Log the error in the console
       }
-    }
+    });
+  }
+
+  redirectToHome(){
+    this.router.navigate(['/']);
+
   }
 }

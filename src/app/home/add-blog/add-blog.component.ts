@@ -51,11 +51,10 @@ export class AddBlogComponent {
   onSubmit() {
     if (this.addBlogForm.valid) {
       const { title, content } = this.addBlogForm.value;
-      const userName = this.authService.getCurrentUser()!;
+    
       const post: Post = {
         title,
-        content,
-        userName,
+        content
       };
       this.blogService.addPost(post).subscribe();
 

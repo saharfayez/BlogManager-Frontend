@@ -5,5 +5,6 @@ export interface Post {
 
   content: string;
 
-  userName: string;
+  userName?:string; 
+
 }

@@ -11,7 +11,7 @@ export class BlogService {
   private url = 'http://localhost:8080';
   constructor(
     private indexedDBService: IndexedDBService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
   ) {}
 
   // Add Post to Database
@@ -19,11 +19,11 @@ export class BlogService {
     return this.httpClient.post(`${this.url}/posts`, post);
   }
 
-  // Retrieve all blog posts
-  async getAllPosts(): Promise<any[]> {
-    return await this.indexedDBService.getAllPosts();
+  getAllPosts(): Observable<any> {
+    return this.httpClient.get(`${this.url}/posts`);
   }
 
+ 
   // Retrieve a single post by ID
   async getPostById(id: number): Promise<any> {
     return await this.indexedDBService.getPostById(id);

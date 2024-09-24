@@ -10,7 +10,7 @@ import { ViewBlogComponent } from './home/view-blog/view-blog.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'auth/login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   
   { path: 'add-blog', component: AddBlogComponent },

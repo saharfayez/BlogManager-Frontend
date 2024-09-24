@@ -33,32 +33,51 @@ export class HeaderComponent {
     private router: Router,
     private authService: AuthService
   ) {}
+
+
   ngOnInit() {
     this.updateLoginState();
     this.checkUrl();
   }
 
+
+
   updateLoginState() {
-    this.isLoggedIn = this.authService.isLoggedIn();
+    this.isLoggedIn = this.authService.isLogged();
+    console.log("logged in :" +this.isLoggedIn);
+    
     if (this.isLoggedIn) {
-      this.currentUser = this.authService.getCurrentUser()!;
+      
+      this.currentUser = this.authService.getUser();
+      console.log(this.currentUser);
+
     }
   }
+
+
+
   checkUrl(){
     const currentUrl = this.router.url;
-    this.isAuthPage = currentUrl === '/login';
+    this.isAuthPage = currentUrl === '/auth/login';
     console.log(this.isAuthPage);
     
   }
 
+
+
   redirectToLogin() {
     console.log('Navigating to login page'); // Debug line
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
+
+
+
   redirectToSignUp() {
     console.log('Navigating to login page'); // Debug line
     this.router.navigate(['/signup']);
   }
+
+
 
   redirectToAddPost() {
     console.log('Navigating to Add Blog page'); // Debug line
@@ -71,9 +90,11 @@ export class HeaderComponent {
     });
   }
 
+
+
   logout() {
     this.authService.logout();
     this.updateLoginState();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 }
